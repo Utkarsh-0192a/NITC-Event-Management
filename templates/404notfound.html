@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4faff; /* Light blue background */
+            color: #333; /* Dark grey text */
+        }
+
+        /* Container styling */
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: #ffffff; /* White container */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 404 heading styling */
+        h1 {
+            font-size: 5rem;
+            color: #667eea; /* Bright blue */
+        }
+
+        /* Paragraph styling */
+        p {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: #666; /* Medium grey text */
+        }
+
+        /* Button styling */
+        .button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #667eea; /* Warm orange */
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #764ba2;
+            /* background-color: #d35400; */
+            /* background-color: linear-gradient(135deg, #667eea, #764ba2); */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <p>Oops! Looks like you’ve wandered off the map.</p>
+        <p>The page you’re looking for might have moved, or it could be taking a little break.</p>
+        <a href="/" class="button">Take Me Home</a>
+    </div>
+</body>
+</html>
