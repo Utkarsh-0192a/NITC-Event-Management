@@ -1,7 +1,0 @@
-ans 9
-ans 12
-ans 14
-ans 15
-ans 669057456
-ans 8
-ans 10
