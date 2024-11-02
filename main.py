@@ -70,7 +70,9 @@ with app.app_context():
 def home_page():
     return render_template("index.html")
 
+
 @app.route('/home')
+@login_required
 def home():
     return render_template("profile.html")
 
@@ -131,7 +133,8 @@ def login():
             # session['username'] = user.username
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect((f'/dashboard/{str(user.user_type)}/{str(username)}'))
+            return redirect('/home')
+            # return redirect((f'/dashboard/{str(user.user_type)}/{str(username)}'))
         else:
             flash('Login failed. Check your username and password.', 'danger')
 
@@ -278,6 +281,7 @@ def unauthorized():
 @login_required
 def logout():
     logout_user()
+    session.pop('_flashes', None)
     flash("You've been logged out.", "info")
     return redirect(url_for('login'))
 
@@ -295,6 +299,34 @@ def responce(id, result):
     with open(file_path, 'w') as file:
         file.writelines(lines)
     return redirect((f'/dashboard/faculty/0'))
+
+@app.route('/history/<uname>')
+@login_required
+@role_required('student')
+def history(uname):
+    request_contents = []
+    REQUESTS_DIR = 'req'
+    for filename in os.listdir(REQUESTS_DIR):
+        filepath = os.path.join(REQUESTS_DIR, filename)
+        if os.path.isfile(filepath):
+            if os.path.isfile(filepath):
+                with open(filepath, 'r') as file:
+                    lines = file.read().splitlines()
+                    if lines[8] != str(uname):
+                        continue
+                    request = {
+                        'id': lines[0],
+                        'name': lines[1],
+                        'roll': lines[2],
+                        'description': lines[3],
+                        'email': lines[4],
+                        'type': lines[5],
+                        'status': lines[6],
+                        'file_path': f"{lines[7]}"
+                    }
+                    request_contents.append(request)
+    print(len(request_contents))
+    return render_template('history.html', request_contents=request_contents)
 
 # Custom 404 error handler
 @app.errorhandler(404)
