@@ -1,22 +1,54 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from functools import wraps
+# from flask import abort
 import os
 os.environ['FLASK_ENV'] = 'development'
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'files'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.config['SECRET_KEY'] = 'merah'  # replace with a strong secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://ugdt:ugdt@localhost/cred'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'  # redirect to 'login' view if not authenticated
+login_manager.login_message = "Please log in to access this page."
+
 # Define the User model
-class User(db.Model):
-    #id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50),primary_key=True)
+class User(db.Model,UserMixin):
+    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    username = db.Column(db.String(50),unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     user_type = db.Column(db.String(50), nullable=False)  # New field for user role
+
+    def get_id(self):
+        return self.id
+
+def role_required(required_role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return redirect(url_for('login'))
+            elif current_user.user_type != required_role:
+                flash("Access denied: You do not have the required permissions.", "danger")
+                return redirect(url_for('unauthorized'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Initialize the database
 with app.app_context():
@@ -76,49 +108,76 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user_type = request.form['user_type']
+        # user_type = request.form['user_type']
         user = User.query.filter_by(username=username).first()
         
         if user and password==user.password:
-            session['username'] = user.username
+            # session['username'] = user.username
+            login_user(user)
             flash('Logged in successfully!', 'success')
             return redirect((f'/dashboard/{str(user.user_type)}/{str(username)}'))
         else:
-            flash('Login failed. Check your email and password.', 'danger')
+            flash('Login failed. Check your username and password.', 'danger')
 
     return render_template('user-auth.html')
 
 
 @app.route('/submit', methods=['GET', 'POST'])
+@login_required
 def submit():
-    if request.method == 'POST':
-        name = request.form['name']
-        roll = request.form['roll']
-        email = request.form['email']
-        permissionType = request.form['permissionType']
-        dis = request.form['dis']
-        return f"{name} {roll} {email} {dis} {permissionType}"
-    else:
-        return "nope"
+    name = request.form.get('name')
+    roll = request.form.get('roll')
+    discription = request.form.get('dis')
+    email = request.form['email']
+    type = request.form.get('type')
+
+    file_path = "id.txt"
+    with open(file_path, 'r') as file:
+        current_value = int(file.read().strip())
+    with open(file_path, 'w') as file:
+        file.write(str(current_value+1))
+
+    file = request.files['document']
+    file_extension = os.path.splitext(file.filename)[1]
+    file.filename = f"{current_value}{file_extension}"
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(file_path)
+
+    filename = f"{current_value}.txt"
+    with open(f"req/{filename}", 'w') as file:
+        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending")
+    return "Hello"
         
 
+@app.route('/dashboard/student/<uname>')
+@login_required
+@role_required('student')
+def dbs(uname): 
+    return render_template("student.html")
+
+@app.route('/dashboard/admin/<uname>')
+@login_required
+@role_required('admin')
+def dba(uname):
+    return render_template("admin-dash.html")
+
 @app.route('/dashboard/<oper>/<uname>')
-def dashboard(oper, uname):
-    # if oper is None or uname is None:
-    #     return render_template("user-auth.html")
-    if oper == "student":
-        return render_template("student.html")
-    elif oper == "admin":
-        return render_template("admin-dash.html")
-    elif oper == "faculty":
-        return render_template("approval-dash.html")
+@login_required
+@role_required('faculty')
+def dbf(uname):
+    return render_template("approval-dash.html")
+
 
 @app.route('/manage_roles')
+@login_required
+@role_required('admin')
 def manage_roles():
     users = User.query.all()  # Fetch all users from the database
     return render_template('manage_roles.html', users=users)
 
 @app.route('/delete_user/<username>', methods=['POST'])
+@login_required
+@role_required('admin')
 def delete_user(username):
     user = User.query.get(username)
     if user:
@@ -130,6 +189,8 @@ def delete_user(username):
     return redirect(url_for('manage_roles'))
 
 @app.route('/add_user',methods=['POST'])
+@login_required
+@role_required('admin')
 def add_user():
     if request.method == 'POST':
         username = request.form['username']
@@ -139,11 +200,11 @@ def add_user():
 
         if User.query.filter_by(email=email).first():
             flash('Email address already exists', 'danger')
-            return redirect(url_for('register'))
+            return redirect(url_for('login'))
         
         if User.query.filter_by(username=username).first():
             flash('username already exists', 'danger')
-            return redirect(url_for('register'))
+            return redirect(url_for('login'))
 
         # Create a new user instance
         new_user = User(username=username, email=email, password=password, user_type=user_type)
@@ -161,12 +222,16 @@ def add_user():
 
     return render_template('manage_roles.html')
 
-# @app.route('/logout')
-# def logout():
-#     session.pop('user_id', None)
-#     session.pop('username', None)
-#     flash('You have been logged out.', 'info')
-#     return redirect(url_for('login'))
+@app.route('/unauthorized')
+def unauthorized():
+    return render_template('unauthorized.html'), 403
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You've been logged out.", "info")
+    return redirect(url_for('login'))
 
 @app.route('/track/')
 def track():
