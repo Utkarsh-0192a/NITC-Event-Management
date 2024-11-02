@@ -170,7 +170,7 @@ def submit():
     
     filename = f"{current_value}.txt"
     with open(f"req/{filename}", 'w') as file:
-        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}")
+        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}\n{current_user.username}")
     return redirect((f'/dashboard/student/1'))
         
 
