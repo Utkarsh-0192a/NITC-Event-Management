@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-<<<<<<< HEAD
-    <link rel="stylesheet" href="{{ url_for('static', filename='user-auth.css') }}">
-=======
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='user-auth.css') }}"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/user-auth.css') }}">
->>>>>>> refs/remotes/origin/main
+
 </head>
 <body>
     <div class="login-container">
@@ -21,8 +19,8 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
-            <label for="user-type">User Type</label>
-            <select id="user-type" name="user_type" required>
+            <label for="user_type">User Type</label>
+            <select id="user_type" name="user_type" required>
                 <option value="" disabled selected>Select user type</option>
                 <option value="student">Student</option>
                 <option value="faculty">Faculty</option>
