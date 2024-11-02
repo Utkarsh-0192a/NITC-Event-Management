@@ -39,7 +39,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="/auth/login" class="logout">Log out</a>
+        <a href="/logout" class="logout">Log out</a>
         <a href="/track" class="logout">Notification</a>
         <h1>Approval Dashboard</h1>
         <!-- <h2>Welcome, Professor <span id="professor-name">Dipanshu</span>!</h2> -->
@@ -72,6 +72,9 @@
                     <a href="/responce/{{request.id}}/deny"><button>Deny</button></a>
                     <a href="/responce/{{request.id}}/requestinfo"><button>Request More Info</button></a>
                 </div>
+                {% if previous_url %}
+        <p>You came from: <a href="{{ previous_url }}">{{ previous_url }}</a></p>
+    {% endif %}
         </div>
         {% endfor %}
 
