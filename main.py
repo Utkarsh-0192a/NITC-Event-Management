@@ -23,14 +23,7 @@ with app.app_context():
 @app.route('/')
 @app.route('/home')
 def home_page():
-    # return "Hello"
     return render_template("user-auth.html")
-
-# @app.route('/qwert')
-# def qwert():
-#     user_type = "admin"
-#     username = "new"
-#     return redirect((f'/dashboard/{user_type}/{username}'))
 
 @app.route('/auth/<oper>')
 def auth(oper):
@@ -79,9 +72,6 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user_type = request.form['user_type']
-        
-        # user_type = "admin"
-        # username = "new"
         user = User.query.filter_by(username=username).first()
         
         if user and password==user.password:
@@ -125,21 +115,9 @@ def dashboard(oper, uname):
 #     flash('You have been logged out.', 'info')
 #     return redirect(url_for('login'))
 
-@app.route('/admin-dashboard')
-def admin_dashboard():
-    return "<h1>dipanshutiwari115@gmail.com</h1>"
-
-@app.route('/approval-dashboard')
-def approval_dashboard():
-    return "<h2>Approval Dashboard</h2>"
-
 @app.route('/track/')
 def track():
-    return "<h2>Enter ID:</h2>"
-
-@app.route('/request-dashboard')
-def request_dashboard():
-    return "<h2>Request Dashboard</h2>"
+    return render_template("tracking.html")
 
 # Custom 404 error handler
 @app.errorhandler(404)
