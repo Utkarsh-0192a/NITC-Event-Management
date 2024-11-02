@@ -1,12 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory,session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from functools import wraps
+import re
 # from flask import abort
 import os
 os.environ['FLASK_ENV'] = 'development'
 
 app = Flask(__name__)
+
+def escape_js(value):
+    """Escape special characters for safe JavaScript insertion."""
+    value = re.sub(r'\\', r'\\\\', value)
+    value = re.sub(r'"', r'\"', value)
+    value = re.sub(r"'", r"\'", value)
+    value = re.sub(r'\n', r'\\n', value)
+    value = re.sub(r'\r', r'\\r', value)
+    return value
+app.jinja_env.filters['escape_js'] = escape_js
 
 UPLOAD_FOLDER = 'files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -39,6 +50,7 @@ def role_required(required_role):
             if not current_user.is_authenticated:
                 return redirect(url_for('login'))
             elif current_user.user_type != required_role:
+                session.pop('_flashes', None)
                 flash("Access denied: You do not have the required permissions.", "danger")
                 return redirect(url_for('unauthorized'))
             return f(*args, **kwargs)
@@ -57,7 +69,7 @@ with app.app_context():
 @app.route('/')
 @app.route('/home')
 def home_page():
-    return render_template("user-auth.html")
+    return render_template("index.html")
 
 @app.route('/auth/<oper>')
 def auth(oper):
@@ -75,6 +87,7 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
         user_type = request.form['user_type']
+        session.pop('_flashes', None)
         if password != confirm_password:
             flash("Passwords do not match!", 'danger')
             return redirect(url_for('register'))
@@ -110,7 +123,7 @@ def login():
         password = request.form['password']
         # user_type = request.form['user_type']
         user = User.query.filter_by(username=username).first()
-        
+        session.pop('_flashes', None)
         if user and password==user.password:
             # session['username'] = user.username
             login_user(user)
@@ -121,6 +134,10 @@ def login():
 
     return render_template('user-auth.html')
 
+@app.route('/download/<filename>')
+def download_file(filename):
+    directory = os.path.join(app.root_path, 'files')
+    return send_from_directory(directory, filename, as_attachment=True)
 
 @app.route('/submit', methods=['GET', 'POST'])
 @login_required
@@ -128,8 +145,8 @@ def submit():
     name = request.form.get('name')
     roll = request.form.get('roll')
     discription = request.form.get('dis')
-    email = request.form['email']
     type = request.form.get('type')
+    email = request.form.get('email')
 
     file_path = "id.txt"
     with open(file_path, 'r') as file:
@@ -140,13 +157,14 @@ def submit():
     file = request.files['document']
     file_extension = os.path.splitext(file.filename)[1]
     file.filename = f"{current_value}{file_extension}"
+    docname = file.filename
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
-
+    
     filename = f"{current_value}.txt"
     with open(f"req/{filename}", 'w') as file:
-        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending")
-    return "Hello"
+        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}")
+    return redirect((f'/dashboard/student/1'))
         
 
 @app.route('/dashboard/student/<uname>')
@@ -164,8 +182,29 @@ def dba(uname):
 @app.route('/dashboard/<oper>/<uname>')
 @login_required
 @role_required('faculty')
-def dbf(uname):
-    return render_template("approval-dash.html")
+def dbf(oper, uname):
+    request_contents = []
+    REQUESTS_DIR = 'req'
+    for filename in os.listdir(REQUESTS_DIR):
+        filepath = os.path.join(REQUESTS_DIR, filename)
+        if os.path.isfile(filepath):
+            if os.path.isfile(filepath):
+                with open(filepath, 'r') as file:
+                    lines = file.read().splitlines()
+                    request = {
+                        'id': lines[0],
+                        'name': lines[1],
+                        'roll': lines[2],
+                        'description': lines[3],
+                        'email': lines[4],
+                        'type': lines[5],
+                        'status': lines[6],
+                        'file_path': f"{lines[7]}"
+                    }
+                    if (request['status'] == "pending"):
+                        request_contents.append(request)
+    print(len(request_contents))
+    return render_template('approval-dash.html', request_contents=request_contents)
 
 
 @app.route('/manage_roles')
@@ -180,6 +219,7 @@ def manage_roles():
 @role_required('admin')
 def delete_user(username):
     user = User.query.get(username)
+    session.pop('_flashes', None)
     if user:
         db.session.delete(user)
         db.session.commit()
@@ -197,6 +237,7 @@ def add_user():
         email = request.form['email']
         password = request.form['password']
         user_type = request.form['user_type']
+        session.pop('_flashes', None)
 
         if User.query.filter_by(email=email).first():
             flash('Email address already exists', 'danger')
@@ -236,6 +277,17 @@ def logout():
 @app.route('/track/')
 def track():
     return render_template("tracking.html")
+
+@app.route('/responce/<id>/<result>')
+def responce(id, result):
+    file_path = f"req/{id}.txt"
+    line_number = 6
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    lines[line_number] = str(result)+"\n"
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+    return redirect((f'/dashboard/faculty/0'))
 
 # Custom 404 error handler
 @app.errorhandler(404)

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NITC Event Manager</title>
+    <style>
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background: linear-gradient(to bottom right, #003366, #66a3ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        /* Title and Description */
+        .container h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .container p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #e0e0e0;
+        }
+
+        /* Card Layout */
+        .card-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: #ffffff;
+            color: #003366;
+            border-radius: 8px;
+            padding: 20px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin: 15px 0;
+            color: #003366;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .card .icon {
+            font-size: 3rem;
+            color: #66a3ff;
+        }
+
+        /* Buttons */
+        .card button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #ffffff;
+            background-color: #003366;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .card button:hover {
+            background-color: #00509e;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            color: #d3d3d3;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>NITC Event Manager</h1>
+    <p>Manage all event permissions and facilities at NIT Calicut in a single platform.</p>
+
+    <!-- Card Section -->
+    <div class="card-container">
+        <!-- Student Card -->
+        <div class="card">
+            <div class="icon">🎓</div>
+            <h2>For Students</h2>
+            <p>Request venue bookings, transportation, and equipment with real-time status updates.</p>
+            <button onclick="location.href='/auth/login'">Student Access</button>
+        </div>
+
+        <!-- Faculty Card -->
+        <div class="card">
+            <div class="icon">👨‍🏫</div>
+            <h2>For Faculty</h2>
+            <p>Review and approve requests with options to provide feedback and comments.</p>
+            <button onclick="location.href='/auth/login'">Faculty Access</button>
+        </div>
+
+        <!-- Admin Card -->
+        <div class="card">
+            <div class="icon">🛠️</div>
+            <h2>Admin Dashboard</h2>
+            <p>Monitor requests, manage roles, and generate activity reports.</p>
+            <button onclick="location.href='/auth/login'">Admin Access</button>
+        </div>
+    </div>
+
+    <footer>&copy; 2024 NITC Event Manager</footer>
+</div>
+
+</body>
+</html>
