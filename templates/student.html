@@ -78,16 +78,17 @@
 
     <div class="container">
         <a href="/auth/login" class="logout">Log out</a>
+        <a href="/track" class="logout" style="float: left;">Track</a>
         <h1>Request Permission</h1>
-        <form id="requestForm" action="/submit" method="POST">
+        <form id="requestForm" action="/submit" method="post">
             <label for="name">Student Name:</label>
-            <input type="text" id="name" required>
+            <input type="text" id="name" name="name" required>
 
             <label for="roll">Student Roll No:</label>
-            <input type="text" id="roll" required>
+            <input type="text" id="roll" name="roll" required>
 
             <label for="email">Student Email:</label>
-            <input type="text" id="email" required>
+            <input type="text" id="email" name="email" required>
 
             <label for="permissionType">Select Permission Type:</label>
             <select id="permissionType" required>
@@ -98,12 +99,12 @@
             </select>
 
             <label for="dis">Discription:</label>
-            <input type="text" id="dis" required>
+            <input type="text" id="dis" name="dis" required>
 
             <label for="document">Upload Required Document:</label>
             <input type="file" id="document" required>
 
-            <button action="" type="submit">Submit Request</button>
+            <button type="submit">Submit Request</button>
         </form>
 
         <div class="status-section">
@@ -115,13 +116,5 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('requestForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            document.getElementById('requestStatus').innerText = 'Your request has been submitted. You will be notified via email.';
-            document.getElementById('notification').innerText = 'Notification: Check your email for updates on your request status.';
-            // Here, you would typically handle the form submission to the server
-        });
-    </script>
 </body>
 </html>
