@@ -133,8 +133,9 @@ def login():
             # session['username'] = user.username
             login_user(user)
             flash('Logged in successfully!', 'success')
-            return redirect('/home')
-            # return redirect((f'/dashboard/{str(user.user_type)}/{str(username)}'))
+            if user.user_type=="student":
+                return redirect('/home')
+            return redirect((f'/dashboard/{str(user.user_type)}/{str(username)}'))
         else:
             flash('Login failed. Check your username and password.', 'danger')
 
@@ -189,10 +190,11 @@ def dbs(uname):
 def dba(uname):
     return render_template("admin-dash.html")
 
-@app.route('/dashboard/<oper>/<uname>')
+@app.route('/dashboard/<oper>/<uname>/', defaults={'category': None})
+@app.route('/dashboard/<oper>/<uname>/<category>')
 @login_required
 @role_required('faculty')
-def dbf(oper, uname):
+def dbf(oper, uname, category):
     request_contents = []
     REQUESTS_DIR = 'req'
     for filename in os.listdir(REQUESTS_DIR):
@@ -211,6 +213,10 @@ def dbf(oper, uname):
                         'status': lines[6],
                         'file_path': f"{lines[7]}"
                     }
+                    if (category is not None):
+                        if (category != "all"):
+                            if (request['type'] != str(category)):
+                                continue
                     if (request['status'] == "pending"):
                         request_contents.append(request)
     print(len(request_contents))
@@ -289,8 +295,10 @@ def logout():
 def track():
     return render_template("tracking.html")
 
-@app.route('/responce/<id>/<result>')
+# @app.route('/responce/<id>/<result>/', defaults={'category': None})
+@app.route('/responce/<id>/<result>/')
 def responce(id, result):
+    url = request.referrer
     file_path = f"req/{id}.txt"
     line_number = 6
     with open(file_path, 'r') as file:
@@ -298,7 +306,10 @@ def responce(id, result):
     lines[line_number] = str(result)+"\n"
     with open(file_path, 'w') as file:
         file.writelines(lines)
-    return redirect((f'/dashboard/faculty/0'))
+    # if (category is None):
+    #     return redirect((f'/dashboard/faculty/{current_user.username}'))
+    # return redirect((f'/dashboard/faculty/{current_user.username}/{category}'))
+    return redirect(url)
 
 @app.route('/history/<uname>')
 @login_required
