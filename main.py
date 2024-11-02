@@ -67,9 +67,12 @@ with app.app_context():
     db.create_all()
 
 @app.route('/')
-@app.route('/home')
 def home_page():
     return render_template("index.html")
+
+@app.route('/home')
+def home():
+    return render_template("profile.html")
 
 @app.route('/auth/<oper>')
 def auth(oper):
@@ -133,6 +136,10 @@ def login():
             flash('Login failed. Check your username and password.', 'danger')
 
     return render_template('user-auth.html')
+# @app.route('/home')
+# def home():
+#     return render_template('profile.html')
+
 
 @app.route('/download/<filename>')
 def download_file(filename):

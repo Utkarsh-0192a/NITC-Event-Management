@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+</head>
+<body>
+
+<!-- Side Notification Panel -->
+<div class="notification-panel">
+    <h3>Notifications</h3>
+    <div class="notification">
+        <p>Request #123 has been approved.</p>
+        <time>Today, 10:45 AM</time>
+    </div>
+    <div class="notification">
+        <p>Request #124 requires additional information.</p>
+        <time>Yesterday, 4:20 PM</time>
+    </div>
+    <div class="notification">
+        <p>New message from Admin regarding Request #125.</p>
+        <time>2 days ago, 11:30 AM</time>
+    </div>
+</div>
+
+<!-- Main Content Container -->
+<div class="content-container">
+    <div class="profile-header">
+        <h2>User Profile</h2>
+        <div class="welcome-message">Welcome, {{ current_user.username }} ({{ current_user.user_type }})</div>
+        <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+    </div>
+
+    <!-- Track Requests Section -->
+    <div class="section">
+        <h3>Track Requests</h3>
+        <p>Check the status of your submitted requests here.</p>
+        <a href="/track-requests" class="btn">Track Requests</a>
+    </div>
+
+    <!-- History Section -->
+    <div class="section">
+        <h3>History</h3>
+        <p>View your past requests and their statuses here.</p>
+        <a href="/request-history" class="btn">View History</a>
+    </div>
+</div>
+
+</body>
+</html>
