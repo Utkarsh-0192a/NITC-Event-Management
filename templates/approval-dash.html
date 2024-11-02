@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/approval-dash.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Approval Dashboard</h1>
+        <h2>Welcome, Professor <span id="professor-name">Dipanshu</span>!</h2>
+        <h2>Pending Requests</h2>
+        
+        <div class="request-card">
+            <h3>Request #001</h3>
+            <p>Category: Course Enrollment</p>
+            <p>Status: Pending</p>
+            <div class="decision-panel">
+                <button onclick="decision('approve', 'Request #001')">Approve</button>
+                <button onclick="decision('deny', 'Request #001')">Deny</button>
+                <button onclick="decision('request_more', 'Request #001')">Request More Info</button>
+            </div>
+            <div class="comments-section">
+                <textarea placeholder="Add comments or suggestions..."></textarea>
+                <button>Submit Comment</button>
+            </div>
+        </div>
+
+        <div class="notification-system">
+            <h3>Notifications</h3>
+            <ul id="notifications">
+                <!-- Notifications will appear here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function decision(action, request) {
+            const notifications = document.getElementById('notifications');
+            let message = '';
+
+            if (action === 'approve') {
+                message = `${request} has been approved.`;
+            } else if (action === 'deny') {
+                message = `${request} has been denied.`;
+            } else if (action === 'request_more') {
+                message = `More information requested for ${request}.`;
+            }
+
+            const notificationItem = document.createElement('li');
+            notificationItem.textContent = message;
+            notifications.appendChild(notificationItem);
+        }
+    </script>
+</body>
+</html>

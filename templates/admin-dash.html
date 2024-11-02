@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            background: #444;
+            padding: 10px 0;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        nav a:hover {
+            background: #555;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-top: 0;
+        }
+        section {
+            margin: 20px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #333;
+            color: #fff;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Dashboard</h1>
+</header>
+
+<nav>
+    <a href="#request-management">Request Management</a>
+    <a href="#user-roles">User Roles</a>
+    <a href="#audit-logs">Audit Logs</a>
+    <a href="#reports-analytics">Reports & Analytics</a>
+    <a href="#notification-settings">Notification Settings</a>
+</nav>
+
+<div class="container">
+    <section id="request-management">
+        <h2>Request Management</h2>
+        <p>View and manage all requests across departments, with filters by type, status, and faculty advisor.</p>
+        <button>View Requests</button>
+    </section>
+
+    <section id="user-roles">
+        <h2>User Roles</h2>
+        <p>Assign and manage roles (e.g., student, faculty advisor, admin) with respective permissions.</p>
+        <button>Manage Roles</button>
+    </section>
+
+    <section id="audit-logs">
+        <h2>Audit Logs</h2>
+        <p>Track all actions taken in the system for accountability and auditing.</p>
+        <button>View Logs</button>
+    </section>
+
+    <section id="reports-analytics">
+        <h2>Reports and Analytics</h2>
+        <p>Generate reports on request statistics, approval rates, and common request types.</p>
+        <button>Generate Reports</button>
+    </section>
+
+    <section id="notification-settings">
+        <h2>Notification Settings</h2>
+        <p>Configure and customize notifications for different user types.</p>
+        <button>Manage Notifications</button>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2024 Admin Dashboard</p>
+</footer>
+
+</body>
+</html>
