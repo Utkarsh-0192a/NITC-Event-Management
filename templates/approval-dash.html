@@ -6,6 +6,18 @@
     <title>Approval Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/approval-dash.css') }}">
     <style>
+        .input-group{
+            display: inline;
+        }
+        .filter{
+            text-decoration: none;
+            color: #fff;
+            /* float: right; */
+            border-radius: 15px;
+            margin: 5px;
+            padding: 10px;
+            background-color: #667eea;
+        }
         .logout{
             text-decoration: none;
             color: #fff;
@@ -33,6 +45,18 @@
         <!-- <h2>Welcome, Professor <span id="professor-name">Dipanshu</span>!</h2> -->
         <h2>Pending Requests</h2>
         
+        <form class="decision-panel" style="margin-bottom: 10px;" onsubmit="redirectToCategory(event)">
+            <div style="display: inline;">
+                <select id="type" name="type" required>
+                    <option value="" disabled selected>Select your Category</option>
+                    <option value="all">All</option>
+                    <option value="venue_booking">Venue Booking</option>
+                    <option value="bus_service">Bus Service</option>
+                    <option value="equipment_reservation">Equipment Reservation</option>
+                </select>
+            </div>
+            <button type="submit">Filter</a></button>
+        </form>
         {% for request in request_contents %}
         <div class="request-card">
                 <h3>{{ request.name }} (Roll: {{ request.roll }})</h3>
@@ -81,6 +105,17 @@
         </div>
     </div>
 
+    <script>
+        function redirectToCategory(event) {
+        event.preventDefault();  // Prevent form submission
+        const category = document.getElementById("type").value;
+        if (category) {
+            window.location.href = `/dashboard/faculty/0/${category}`;
+        } else {
+            alert("Please select a category.");
+        }
+    }
+    </script>
     <script>
         // JavaScript functions to handle modal display
         function showDescription(description) {
