@@ -7,20 +7,20 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #667eea;
+            background-color: #764ba2;
             margin: 0;
             padding: 20px;
         }
         h1 {
             text-align: center;
-            color: #667eea; /* Primary color */
+            color: #764ba2; /* Primary color */
         }
         .container {
             max-width: 800px; /* Increased width */
             margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 50px;
+            border-radius: 50px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .logout{
@@ -29,7 +29,8 @@
             float: right;
             border-radius: 15px;
             padding: 10px;
-            background-color: #667eea;
+            margin: 10px;
+            background-color: #764ba2;
             border: 5px solid #764ba2;
         }
         label {
@@ -47,7 +48,7 @@
             box-sizing: border-box;
         }
         button {
-            background-color: #667eea; /* Primary color */
+            background-color: #764ba2; /* Primary color */
             color: white;
             border: none;
             padding: 10px;
@@ -72,23 +73,30 @@
             border: 1px solid #bee5eb;
             border-radius: 5px;
         }
+        .text-box-inp{
+            border-radius: 100px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <a href="/auth/login" class="logout">Log out</a>
-        <a href="/track" class="logout" style="float: left;">Track</a>
+        <!-- <div style="display: flex; justify-content: space-between;"> -->
+        <a href="/home" class="logout">Home</a>
+        <!-- <a href="/track" class="logout" style="float: left;">Track</a> -->
+        <!-- <a href="/student/notification" class="logout" style="float: left;">Notification</a> -->
+        <!-- <a href="/student/history" class="logout" style="float: left;">History</a> -->
+        <!-- </div> -->
         <h1>Request Permission</h1>
         <form id="requestForm" action="/submit" method="post" enctype="multipart/form-data">
             <label for="name">Student Name:</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name"  required placeholder="Utkarsh Gautumn">
 
             <label for="roll">Student Roll No:</label>
-            <input type="text" id="roll" name="roll" required>
+            <input type="text" id="roll" name="roll" required placeholder="B000000XX">
 
             <label for="email">Student Email:</label>
-            <input type="text" id="email" name="email" required>
+            <input type="text" id="email" name="email" required placeholder="example@xyz.abc">
 
             <label for="permissionType">Select Permission Type:</label>
             <select id="permissionType" name="type" required>
@@ -99,12 +107,13 @@
             </select>
 
             <label for="dis">Discription:</label>
-            <input type="text" id="dis" name="dis" required>
+            <input type="text" id="dis" name="dis" required placeholder="About Request">
 
             <label for="document">Upload Required Document:</label>
             <input type="file" id="document" name="document" required>
-
-            <button type="submit">Submit Request</button>
+            <div style="text-align: center;">
+            <button type="submit" style="border-radius: 30px; margin: 20px; padding: 20px; max-width: 200px; font-size: larger;">Submit Request</button>
+            </div>
         </form>
 
         <!-- <div class="status-section">

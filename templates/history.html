@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/approval-dash.css') }}">
+    <style>
+        .logout{
+            text-decoration: none;
+            color: #fff;
+            float: right;
+            border-radius: 15px;
+            margin: 10px;
+            padding: 10px;
+            background-color: #667eea;
+            border: 5px solid #764ba2;
+        }
+        .description-button { padding: 5px 10px; background-color: #667eea; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); }
+        .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 600px; text-align: center; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: #000; }
+        .modal-content { max-height: 60vh; overflow-y: auto; }
+        #descriptionText { word-wrap: break-word; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/home" class="logout">Home</a>
+        <h1>History</h1>
+        
+        {% for request in request_contents %}
+        <div class="request-card">
+                <h3>{{ request.name }} (Roll: {{ request.roll }})</h3>
+                <p><strong>Status:</strong> {{ request.status }}</p>
+                <p><strong>Email:</strong> {{ request.email }}</p>
+                <div class="decision-panel">
+                    <button class="description-button" onclick="showDescription('{{ request.description | escape_js }}')">Description</button>
+                    <a href="{{ url_for('download_file', filename=request.file_path) }}" class="button">Download File</a>
+                </div>
+        </div>
+        {% endfor %}
+
+        <div id="descriptionModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p id="descriptionText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDescription(description) {
+            document.getElementById('descriptionText').textContent = description;
+            document.getElementById('descriptionModal').style.display = 'block';
+        }
+        function closeModal() {
+            document.getElementById('descriptionModal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById('descriptionModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

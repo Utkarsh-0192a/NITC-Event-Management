@@ -17,12 +17,36 @@ app.jinja_env.filters['escape_js'] = escape_js
 UPLOAD_FOLDER = 'files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
 @app.route('/')
 @app.route('/home')
 def home_page():
     return render_template("user-auth.html")
 
+@app.route('/history/<uname>')
+def history(uname):
+    request_contents = []
+    REQUESTS_DIR = 'req'
+    for filename in os.listdir(REQUESTS_DIR):
+        filepath = os.path.join(REQUESTS_DIR, filename)
+        if os.path.isfile(filepath):
+            if os.path.isfile(filepath):
+                with open(filepath, 'r') as file:
+                    lines = file.read().splitlines()
+                    if lines[8] != str(uname):
+                        continue
+                    request = {
+                        'id': lines[0],
+                        'name': lines[1],
+                        'roll': lines[2],
+                        'description': lines[3],
+                        'email': lines[4],
+                        'type': lines[5],
+                        'status': lines[6],
+                        'file_path': f"{lines[7]}"
+                    }
+                    request_contents.append(request)
+    print(len(request_contents))
+    return render_template('history.html', request_contents=request_contents)
 @app.route('/auth/<oper>')
 def auth(oper):
     if oper == "login":
