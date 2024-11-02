@@ -80,7 +80,7 @@
         <a href="/auth/login" class="logout">Log out</a>
         <a href="/track" class="logout" style="float: left;">Track</a>
         <h1>Request Permission</h1>
-        <form id="requestForm" action="/submit" method="post">
+        <form id="requestForm" action="/submit" method="post" enctype="multipart/form-data">
             <label for="name">Student Name:</label>
             <input type="text" id="name" name="name" required>
 
@@ -91,29 +91,28 @@
             <input type="text" id="email" name="email" required>
 
             <label for="permissionType">Select Permission Type:</label>
-            <select id="permissionType" required>
+            <select id="permissionType" name="type" required>
                 <option value="">Select</option>
-                <option value="venue">Venue Booking</option>
-                <option value="bus">Bus Service</option>
-                <option value="equipment">Equipment Reservation</option>
+                <option value="venue_booking">Venue Booking</option>
+                <option value="bus_service">Bus Service</option>
+                <option value="equipment_reservation">Equipment Reservation</option>
             </select>
 
             <label for="dis">Discription:</label>
             <input type="text" id="dis" name="dis" required>
 
             <label for="document">Upload Required Document:</label>
-            <input type="file" id="document" required>
+            <input type="file" id="document" name="document" required>
 
             <button type="submit">Submit Request</button>
         </form>
 
-        <div class="status-section">
+        <!-- <div class="status-section">
             <h2>Request Status</h2>
             <p id="requestStatus">Pending</p>
             <div class="notification" id="notification">
-                <!-- Notifications will appear here -->
             </div>
-        </div>
+        </div> -->
     </div>
 
 </body>
