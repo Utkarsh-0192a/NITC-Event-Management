@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="user-auth.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user-auth.css') }}">
 </head>
 <body>
     <div class="login-container">
@@ -20,15 +20,15 @@
             <label for="user-type">User Type</label>
             <select id="user-type" name="user_type" required>
                 <option value="" disabled selected>Select user type</option>
-                <option value="admin">Admin</option>
+                <option value="student">Student</option>
                 <option value="faculty">Faculty</option>
-                <option value="student">student</option>
+                <option value="admin">Admin</option>
             </select>
 
             <button type="submit">Login</button>
         </form>
         <div class="footer">
-            <p>Don't have an account? <a href="register.html">Sign up</a></p>
+            <p>Don't have an account? <a href="/auth/register">Sign up</a></p>
         </div>
     </div>
 </body>

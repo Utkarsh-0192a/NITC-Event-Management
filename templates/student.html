@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Request Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #667eea;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #667eea; /* Primary color */
+        }
+        .container {
+            max-width: 800px; /* Increased width */
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .logout{
+            text-decoration: none;
+            color: #fff;
+            float: right;
+            border-radius: 15px;
+            padding: 10px;
+            background-color: #667eea;
+            border: 5px solid #764ba2;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"],
+        input[type="file"],
+        select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #667eea; /* Primary color */
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #5561c3; /* Darker shade for hover effect */
+        }
+        .status-section {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .notification {
+            margin-top: 10px;
+            padding: 10px;
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="/auth/login" class="logout">Log out</a>
+        <h1>Request Permission</h1>
+        <form id="requestForm" action="/submit" method="POST">
+            <label for="name">Student Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="roll">Student Roll No:</label>
+            <input type="text" id="roll" required>
+
+            <label for="email">Student Email:</label>
+            <input type="text" id="email" required>
+
+            <label for="permissionType">Select Permission Type:</label>
+            <select id="permissionType" required>
+                <option value="">Select</option>
+                <option value="venue">Venue Booking</option>
+                <option value="bus">Bus Service</option>
+                <option value="equipment">Equipment Reservation</option>
+            </select>
+
+            <label for="dis">Discription:</label>
+            <input type="text" id="dis" required>
+
+            <label for="document">Upload Required Document:</label>
+            <input type="file" id="document" required>
+
+            <button action="" type="submit">Submit Request</button>
+        </form>
+
+        <div class="status-section">
+            <h2>Request Status</h2>
+            <p id="requestStatus">Pending</p>
+            <div class="notification" id="notification">
+                <!-- Notifications will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            document.getElementById('requestStatus').innerText = 'Your request has been submitted. You will be notified via email.';
+            document.getElementById('notification').innerText = 'Notification: Check your email for updates on your request status.';
+            // Here, you would typically handle the form submission to the server
+        });
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
-    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
 </head>
 <body>
     <div class="signup-container">
@@ -32,15 +32,15 @@
                     <label for="user-type">User Type</label>
                     <select id="user-type" name="user_type" required>
                         <option value="" disabled selected>Select your role</option>
-                        <option value="admin">Admin</option>
                         <option value="student">Student</option>
                         <option value="faculty">Faculty</option>
+                        <option value="admin">Admin</option>
                     </select>
                 </div>
                 <button type="submit" class="signup-button">Create Account</button>
             </form>
             <div class="footer">
-                <p>Already have an account? <a href="index.html">Login here</a></p>
+                <p>Already have an account? <a href="/auth/login">Login here</a></p>
             </div>
         </div>
     </div>
