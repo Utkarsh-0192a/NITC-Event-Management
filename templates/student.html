@@ -78,50 +78,42 @@
 
     <div class="container">
         <a href="/auth/login" class="logout">Log out</a>
+        <a href="/track" class="logout" style="float: left;">Track</a>
         <h1>Request Permission</h1>
-        <form id="requestForm" action="/submit" method="POST">
+        <form id="requestForm" action="/submit" method="post" enctype="multipart/form-data">
             <label for="name">Student Name:</label>
-            <input type="text" id="name" required>
+            <input type="text" id="name" name="name" required>
 
             <label for="roll">Student Roll No:</label>
-            <input type="text" id="roll" required>
+            <input type="text" id="roll" name="roll" required>
 
             <label for="email">Student Email:</label>
-            <input type="text" id="email" required>
+            <input type="text" id="email" name="email" required>
 
             <label for="permissionType">Select Permission Type:</label>
-            <select id="permissionType" required>
+            <select id="permissionType" name="type" required>
                 <option value="">Select</option>
-                <option value="venue">Venue Booking</option>
-                <option value="bus">Bus Service</option>
-                <option value="equipment">Equipment Reservation</option>
+                <option value="venue_booking">Venue Booking</option>
+                <option value="bus_service">Bus Service</option>
+                <option value="equipment_reservation">Equipment Reservation</option>
             </select>
 
             <label for="dis">Discription:</label>
-            <input type="text" id="dis" required>
+            <input type="text" id="dis" name="dis" required>
 
             <label for="document">Upload Required Document:</label>
-            <input type="file" id="document" required>
+            <input type="file" id="document" name="document" required>
 
-            <button action="" type="submit">Submit Request</button>
+            <button type="submit">Submit Request</button>
         </form>
 
-        <div class="status-section">
+        <!-- <div class="status-section">
             <h2>Request Status</h2>
             <p id="requestStatus">Pending</p>
             <div class="notification" id="notification">
-                <!-- Notifications will appear here -->
             </div>
-        </div>
+        </div> -->
     </div>
 
-    <script>
-        document.getElementById('requestForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            document.getElementById('requestStatus').innerText = 'Your request has been submitted. You will be notified via email.';
-            document.getElementById('notification').innerText = 'Notification: Check your email for updates on your request status.';
-            // Here, you would typically handle the form submission to the server
-        });
-    </script>
 </body>
 </html>
