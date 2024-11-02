@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+import os
+os.environ['FLASK_ENV'] = 'development'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'merah'  # replace with a strong secret key
@@ -111,6 +113,54 @@ def dashboard(oper, uname):
     elif oper == "faculty":
         return render_template("approval-dash.html")
 
+@app.route('/manage_roles')
+def manage_roles():
+    users = User.query.all()  # Fetch all users from the database
+    return render_template('manage_roles.html', users=users)
+
+@app.route('/delete_user/<username>', methods=['POST'])
+def delete_user(username):
+    user = User.query.get(username)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        flash(f'User {username} has been deleted.', 'success')
+    else:
+        flash(f'User {username} not found.', 'error')
+    return redirect(url_for('manage_roles'))
+
+@app.route('/add_user',methods=['POST'])
+def add_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        user_type = request.form['user_type']
+
+        if User.query.filter_by(email=email).first():
+            flash('Email address already exists', 'danger')
+            return redirect(url_for('register'))
+        
+        if User.query.filter_by(username=username).first():
+            flash('username already exists', 'danger')
+            return redirect(url_for('register'))
+
+        # Create a new user instance
+        new_user = User(username=username, email=email, password=password, user_type=user_type)
+
+        # Add the new user to the database
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('User registered successfully!')
+            return redirect(url_for('admin-dash'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error adding user to the database.')
+            print(e)  # Optional: Print the error for debugging
+
+    return render_template('manage_roles.html')
+
 # @app.route('/logout')
 # def logout():
 #     session.pop('user_id', None)
@@ -128,4 +178,4 @@ def page_not_found(e):
     return render_template("404notfound.html"), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,use_reloader=True)
