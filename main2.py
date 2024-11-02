@@ -92,8 +92,9 @@ def download_file(filename):
     directory = os.path.join(app.root_path, 'files')
     return send_from_directory(directory, filename, as_attachment=True)
 
-@app.route('/dashboard/<oper>/<uname>')
-def dashboard(oper, uname):
+@app.route('/dashboard/<oper>/<uname>/', defaults={'category': None})
+@app.route('/dashboard/<oper>/<uname>/<category>')
+def dashboard(oper, uname, category):
     if oper == "student":
         return render_template("student.html")
     elif oper == "admin":
@@ -117,6 +118,10 @@ def dashboard(oper, uname):
                             'status': lines[6],
                             'file_path': f"{lines[7]}"
                         }
+                        if (category is not None):
+                            if (category != "all"):
+                                if (request['type'] != str(category)):
+                                    continue
                         if (request['status'] == "pending"):
                             request_contents.append(request)
         print(len(request_contents))
