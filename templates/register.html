@@ -5,8 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <style>
+        /* Flash Message Container */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 600px;
+        }
+    
+        /* Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            opacity: 0.95;
+            color: #333;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+    
+        /* Color-Coded Alerts */
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+    
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    
+        /* Close Button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+    </style>
+    
 </head>
 <body>
+    <div class="alert-container">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>{{ message }}</span>
+                        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
     <div class="signup-container">
         <div class="signup-card">
             <h2>Sign Up</h2>

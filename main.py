@@ -41,13 +41,16 @@ def register():
         password = request.form['password']
         confirm_password = request.form['confirm_password']
         user_type = request.form['user_type']
-        flash(username,password)
         if password != confirm_password:
-            flash("Passwords do not match!")
+            flash("Passwords do not match!", 'danger')
             return redirect(url_for('register'))
         
         if User.query.filter_by(email=email).first():
-            flash('Email address already exists')
+            flash('Email address already exists', 'danger')
+            return redirect(url_for('register'))
+        
+        if User.query.filter_by(username=username).first():
+            flash('username already exists', 'danger')
             return redirect(url_for('register'))
 
         # Create a new user instance
@@ -77,7 +80,7 @@ def login():
         if user and password==user.password:
             session['username'] = user.username
             flash('Logged in successfully!', 'success')
-            return redirect((f'/dashboard/{str(user_type)}/{str(username)}'))
+            return redirect((f'/dashboard/{str(user.user_type)}/{str(username)}'))
         else:
             flash('Login failed. Check your email and password.', 'danger')
 
