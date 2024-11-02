@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up Page</title>
-    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
 </head>
 <body>
     <div class="signup-container">
         <div class="signup-card">
             <h2>Sign Up</h2>
             <p>Join our community today!</p>
-            <form action="welcome.html" method="post">
+            <form action="{{ url_for('register') }}" method="post">
                 <div class="input-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Username" required>
@@ -29,8 +29,8 @@
                     <input type="password" id="confirm-password" name="confirm_password" placeholder="Confirm Password" required>
                 </div>
                 <div class="input-group">
-                    <label for="user-type">User Type</label>
-                    <select id="user-type" name="user_type" required>
+                    <label for="user_type">User Type</label>
+                    <select id="user_type" name="user_type" required>
                         <option value="" disabled selected>Select your role</option>
                         <option value="admin">Admin</option>
                         <option value="student">Student</option>

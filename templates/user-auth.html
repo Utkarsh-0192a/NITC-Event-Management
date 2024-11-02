@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="user-auth.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='user-auth.css') }}">
 </head>
 <body>
     <div class="login-container">
         <h2>Welcome Back</h2>
         <p>Please login to your account</p>
-        <form action="dashboard.html" method="post">
+        <form action="{{ url_for('login') }}" method="post">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
