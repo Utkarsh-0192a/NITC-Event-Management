@@ -1,0 +1,6 @@
+operation: submitted -ID=<built-in function id> -FROM="dipanshu"
+operation: responce -ID=7 -FACULTY="fac" -STATUS="approved"
+operation: responce -ID=6 -FACULTY="fac" -STATUS="denied"
+operation: submitted -ID=<built-in function id> -FROM="dipanshu"
+operation: comment -ID=5 -FACULTY="fac"
+operation: responce -ID=5 -FACULTY="fac" -STATUS="requestedinfo"

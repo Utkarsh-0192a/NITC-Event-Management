@@ -1,9 +1,9 @@
+from sendmail import sendmail
 from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory,session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from functools import wraps
 import re
-# from flask import abort
 import os
 os.environ['FLASK_ENV'] = 'development'
 
@@ -76,6 +76,57 @@ def home_page():
 def home():
     return render_template("profile.html")
 
+@app.route('/dashboard/admin/console')
+@login_required
+
+def display_console():
+    try:
+        with open('console.txt', 'r') as file:
+            console_output = file.read().splitlines()  # Read the file contents
+    except FileNotFoundError:
+        console_output = ["Error: 'console.txt' file not found."]
+
+    return render_template('console.html', console_output=console_output)
+                           
+@app.route('/manage_requests')
+def manage_requests():
+    # category = request.form.get('cat')
+    request_contents = []
+    REQUESTS_DIR = 'req'
+    for filename in os.listdir(REQUESTS_DIR):
+        filepath = os.path.join(REQUESTS_DIR, filename)
+        if os.path.isfile(filepath):
+            if os.path.isfile(filepath):
+                with open(filepath, 'r') as file:
+                    lines = file.read().splitlines()
+                    request = {
+                        'id': lines[0],
+                        'name': lines[1],
+                        'roll': lines[2],
+                        'description': lines[3],
+                        'email': lines[4],
+                        'type': lines[5],
+                        'status': lines[6],
+                        'file_path': f"{lines[7]}"
+                    }
+                    # if (category is not None):
+                    #     if (category != "all"):
+                    #         if (category == "type"):
+                    #             if (request['type'] != type):
+                    #                 continue
+                    #         if (category == "status"):
+                    #             if (request['status'] != type):
+                                    # continue
+                    request_contents.append(request)
+    print(len(request_contents))
+    return render_template('reqmanage.html', request_contents=request_contents)
+    
+# @app.route('/req_manage', methods=['GET', 'POST'])
+# @login_required
+# @role_required('admin')
+# def req_manage():
+    
+
 @app.route('/auth/<oper>')
 def auth(oper):
     if oper == "login":
@@ -144,6 +195,36 @@ def login():
 # def home():
 #     return render_template('profile.html')
 
+@app.route('/submit_comment', methods=['POST'])
+def submit_comment():
+    file_path = "id.txt"
+    with open(file_path, 'r') as file:
+        current_value = int(file.read().strip())
+    comment = request.form.get('comment')
+    id = request.form.get('id')
+    if int(id) >= int(current_value):
+        return redirect("dashboard/faculty/0/")
+    file_path = f"req/{id}.txt"
+    line_number = 9
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    email = lines[4]
+    if (len(lines) < 10):
+        lines.append("\n"+str(comment)+"\n")
+    else:
+        lines[9] = (str(comment)+"\n")
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+    # return "hello"
+    # return render_template('approval-dash.html')
+    sendmail(email, f"Someone Commented on your Request with ID: {id}", f"Hey There,\nThere was a comment done on your request with ID: {id}. Make sure to check it.")
+    with open("console.txt", 'r') as file:
+        lines = file.readlines()
+    comment = f"operation: comment -ID={id} -FACULTY=\"{current_user.username}\""
+    lines.append(str(comment)+'\n')
+    with open("console.txt", 'w') as file:
+        file.writelines(lines)
+    return redirect("dashboard/faculty/0/")
 
 @app.route('/download/<filename>')
 def download_file(filename):
@@ -174,7 +255,15 @@ def submit():
     
     filename = f"{current_value}.txt"
     with open(f"req/{filename}", 'w') as file:
-        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}\n{current_user.username}\n")
+        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}\n{current_user.username}")
+    sendmail(str(current_user.email), f"Request submitted successfully with ID: {current_value}", f"Hey There,\nThere was a request with ID: {current_value} submitted from your account. Please wait for a few days before our faculty reviews the request.")
+    with open("console.txt", 'r') as file:
+        lines = file.readlines()
+    comment = f"operation: submitted -ID={current_value} -FROM=\"{current_user.username}\""
+    lines.append(str(comment)+'\n')
+    with open("console.txt", 'w') as file:
+        file.writelines(lines)
+    ###############################################################################################
     return redirect((f'/dashboard/student/1'))
         
 
@@ -322,12 +411,17 @@ def responce(id, result):
     line_number = 6
     with open(file_path, 'r') as file:
         lines = file.readlines()
+    email = lines[4]
     lines[line_number] = str(result)+"\n"
     with open(file_path, 'w') as file:
         file.writelines(lines)
-    # if (category is None):
-    #     return redirect((f'/dashboard/faculty/{current_user.username}'))
-    # return redirect((f'/dashboard/faculty/{current_user.username}/{category}'))
+    sendmail(email, f"Update on your Request with ID: {id}", f"Hey There,\nThere was an update on your request with ID: {id}. Make sure to check it.")
+    with open("console.txt", 'r') as file:
+        lines = file.readlines()
+    comment = f"operation: responce -ID={id} -FACULTY=\"{current_user.username}\" -STATUS=\"{str(result)}\""
+    lines.append(str(comment)+'\n')
+    with open("console.txt", 'w') as file:
+        file.writelines(lines)
     return redirect(url)
 
 @app.route('/history/<uname>')

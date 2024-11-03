@@ -32,7 +32,7 @@
         
         {% for request in request_contents %}
         <div class="request-card">
-                <h3>{{ request.name }} (Roll: {{ request.roll }})</h3>
+                <h3>{{ request.name }} (Roll: {{ request.roll }}) (ID: {{request.id}})</h3>
                 <p><strong>Status:</strong> {{ request.status }}</p>
                 <p><strong>Email:</strong> {{ request.email }}</p>
                 <div class="decision-panel">

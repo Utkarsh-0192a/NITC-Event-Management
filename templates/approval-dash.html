@@ -72,23 +72,11 @@
         </form>
         {% for request in request_contents %}
         <div class="request-card">
-                <div id="commentModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeCommentModal()">&times;</span>
-                        <h3>Add Your Comment</h3>
-                        <form id="commentForm" action="/submit_comment" method="POST">
-                            <textarea id="commentText" name="comment" rows="4" style="width: 100%; padding: 10px;" placeholder="Type your comment here..."></textarea>
-                            <input type="number" id="id" name="id" value="{{request.id}}" style="visibility: hidden;">
-                            <button type="submit" style="margin-top: 10px;">Submit Comment</button>
-                        </form>
-                    </div>
-                </div>
-                <h3>{{ request.name }} (Roll: {{ request.roll }})</h3>
+                <h3>{{ request.name }} (Roll: {{ request.roll }}) (ID: {{request.id}})</h3>
                 <p><strong>Status:</strong> {{ request.status }}</p>
                 <p><strong>Email:</strong> {{ request.email }}</p>
                 <div class="decision-panel">
                     <button class="description-button" onclick="showDescription('{{ request.description | escape_js }}')">Description</button>
-                    <button class="comment-button" onclick="showCommentModal()">Add Comment</button>
                     <a href="{{ url_for('download_file', filename=request.file_path) }}" class="button">Download File</a>
                 </div>
                 <div class="decision-panel">
@@ -96,14 +84,23 @@
                     <a href="/responce/{{request.id}}/denied"><button>Deny</button></a>
                     <a href="/responce/{{request.id}}/requestedinfo"><button>Request More Info</button></a>
                 </div>
-<<<<<<< HEAD
                 <!-- {% if previous_url %}
         <p>You came from: <a href="{{ previous_url }}">{{ previous_url }}</a></p>
     {% endif %} -->
-=======
->>>>>>> refs/remotes/origin/main
         </div>
         {% endfor %}
+
+        <div id="commentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCommentModal()">&times;</span>
+                <h3>Add Your Comment</h3>
+                <form id="commentForm" action="/submit_comment" method="POST">
+                    <textarea id="commentText" name="comment" rows="4" style="width: 100%; padding: 10px;" placeholder="Type your comment here..."></textarea>
+                    <input type="number" id="id" name="id" required placeholder="Type ID"></input>
+                    <button type="submit" style="margin-top: 10px;">Submit Comment</button>
+                </form>
+            </div>
+        </div>
 
         <!-- <div id="commentModal" class="modal">
             <div class="modal-content">
@@ -123,9 +120,10 @@
                 <p id="descriptionText"></p>
             </div>
         </div>
+        <button class="comment-button" onclick="showCommentModal()">Add Comment</button>
 
         <div class="notification-system">
-            <h3>Notifications</h3>
+            <!-- <h3>Notifications</h3> -->
             <ul id="notifications">
                 <!-- Notifications will appear here -->
             </ul>
