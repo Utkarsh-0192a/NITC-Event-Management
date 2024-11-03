@@ -174,7 +174,7 @@ def submit():
     
     filename = f"{current_value}.txt"
     with open(f"req/{filename}", 'w') as file:
-        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}\n{current_user.username}")
+        file.write(f"{current_value}\n{name}\n{roll}\n{discription}\n{email}\n{str(type)}\npending\n{docname}\n{current_user.username}\n")
     return redirect((f'/dashboard/student/1'))
         
 
@@ -293,7 +293,26 @@ def logout():
 
 @app.route('/track/')
 def track():
-    return render_template("tracking.html")
+    return render_template("tracking.html",user={"status":"","comment":""})
+
+@app.route('/find',methods=['POST'])
+def find():
+    # url = request.referrer
+    id=request.form['requestId']
+    # print(os.getcwd())
+    file_path ="req/"+str(id)+".txt"
+    # print(file_path)
+    if os.path.exists(file_path):
+        print("geeting here")
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+        if len(lines)>9:
+            user={"status":lines[6],"comment":lines[9]}
+        else:
+            user={"status":lines[6],"comment":""}
+    else:
+        user={"status":"not found","comment":""}
+    return render_template("tracking.html",user=user)
 
 # @app.route('/responce/<id>/<result>/', defaults={'category': None})
 @app.route('/responce/<id>/<result>/')

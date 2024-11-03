@@ -55,7 +55,7 @@
             margin-top: 20px;
             padding: 15px;
             border-radius: 5px;
-            display: none; /* Hidden by default */
+            /* display: none; Hidden by default */
         }
         .status-pending {
             background-color: #f8d7da;
@@ -75,7 +75,7 @@
 
     <div class="container">
         <h1>Track Your Request</h1>
-        <form id="trackingForm">
+        <form id="trackingForm" action="{{ url_for('find') }}" method="post">
             <label for="requestId">Enter Request ID:</label>
             <input type="text" id="requestId" name="requestId" required placeholder="E.g., 123456">
             <button type="submit">Check Status</button>
@@ -83,46 +83,22 @@
 
         <!-- Status Section: Shows result after submitting the form -->
         <div id="statusSection" class="status-section">
-            <p id="statusMessage">Status will appear here...</p>
+            <p id="statusMessage">{{user.status}}</p>
+            <p id="comment">{{user.comment}}</p>
         </div>
     </div>
-
     <script>
-        // Sample data for demonstration
-        const requestStatusData = {
-            "123456": { status: "Pending", message: "Your request is under review." },
-            "654321": { status: "Approved", message: "Your request has been approved!" },
-            "111222": { status: "Denied", message: "Unfortunately, your request was denied." }
-        };
-
-        document.getElementById('trackingForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-            
-            // Retrieve the entered Request ID
-            const requestId = document.getElementById('requestId').value;
-
-            // Get the status element
-            const statusSection = document.getElementById('statusSection');
-            const statusMessage = document.getElementById('statusMessage');
-            
-            // Check if the request ID exists in the sample data
-            if (requestStatusData[requestId]) {
-                const requestInfo = requestStatusData[requestId];
-                
-                // Set the message and style based on status
-                statusMessage.innerText = requestInfo.message;
-                statusSection.className = 'status-section ' + 
-                    (requestInfo.status === 'Approved' ? 'status-approved' : 
-                    requestInfo.status === 'Pending' ? 'status-pending' : 'status-denied');
-                
-                statusSection.style.display = 'block'; // Show the status section
-            } else {
-                statusMessage.innerText = "Request ID not found. Please check the ID and try again.";
-                statusSection.className = 'status-section status-denied'; // Set as error style
-                statusSection.style.display = 'block'; // Show the status section
-            }
-        });
+            var element = document.getElementById('statusMessage');
+            if(element.innerText=="approve"){
+                element.id = 'status-approved';}
+                else if(element.innerText=="pending"){
+                    element.id = 'status-pending';
+                }
+                else {
+                    element.id='status-denied'
+                }
+            // Optional: Log the change to the console
+            console.log('ID changed from originalId to newId');
     </script>
-
 </body>
 </html>
