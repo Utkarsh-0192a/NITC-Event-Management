@@ -12,7 +12,6 @@
         .filter{
             text-decoration: none;
             color: #fff;
-            /* float: right; */
             border-radius: 15px;
             margin: 5px;
             padding: 10px;
@@ -28,6 +27,7 @@
             background-color: #667eea;
             border: 5px solid #764ba2;
         }
+        .comment-button { padding: 5px 10px; background-color: #667eea; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .description-button { padding: 5px 10px; background-color: #667eea; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
         .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); }
         .modal-content { background-color: #fff; margin: 15% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 600px; text-align: center; }
@@ -35,6 +35,20 @@
         .close:hover { color: #000; }
         .modal-content { max-height: 60vh; overflow-y: auto; }
         #descriptionText { word-wrap: break-word; white-space: pre-wrap; }
+        .comment-button { padding: 5px 10px; background-color: #667eea; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); }
+        .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 500px; text-align: center; }
+        #commentText {
+            width: 100%;
+            max-width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: #000; }
     </style>
 </head>
 <body>
@@ -42,7 +56,6 @@
         <a href="/logout" class="logout">Log out</a>
         <a href="/track" class="logout">Notification</a>
         <h1>Approval Dashboard</h1>
-        <!-- <h2>Welcome, Professor <span id="professor-name">Dipanshu</span>!</h2> -->
         <h2>Pending Requests</h2>
         
         <form class="decision-panel" style="margin-bottom: 10px;" onsubmit="redirectToCategory(event)">
@@ -59,24 +72,50 @@
         </form>
         {% for request in request_contents %}
         <div class="request-card">
+                <div id="commentModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeCommentModal()">&times;</span>
+                        <h3>Add Your Comment</h3>
+                        <form id="commentForm" action="/submit_comment" method="POST">
+                            <textarea id="commentText" name="comment" rows="4" style="width: 100%; padding: 10px;" placeholder="Type your comment here..."></textarea>
+                            <input type="number" id="id" name="id" value="{{request.id}}" style="visibility: hidden;">
+                            <button type="submit" style="margin-top: 10px;">Submit Comment</button>
+                        </form>
+                    </div>
+                </div>
                 <h3>{{ request.name }} (Roll: {{ request.roll }})</h3>
-                <!-- <p><strong>Description:</strong> {{ request.description }}</p> -->
                 <p><strong>Status:</strong> {{ request.status }}</p>
                 <p><strong>Email:</strong> {{ request.email }}</p>
                 <div class="decision-panel">
                     <button class="description-button" onclick="showDescription('{{ request.description | escape_js }}')">Description</button>
+                    <button class="comment-button" onclick="showCommentModal()">Add Comment</button>
                     <a href="{{ url_for('download_file', filename=request.file_path) }}" class="button">Download File</a>
                 </div>
                 <div class="decision-panel">
-                    <a href="/responce/{{request.id}}/approve"><button>Approve</button></a>
-                    <a href="/responce/{{request.id}}/deny"><button>Deny</button></a>
-                    <a href="/responce/{{request.id}}/requestinfo"><button>Request More Info</button></a>
+                    <a href="/responce/{{request.id}}/approved"><button>Approve</button></a>
+                    <a href="/responce/{{request.id}}/denied"><button>Deny</button></a>
+                    <a href="/responce/{{request.id}}/requestedinfo"><button>Request More Info</button></a>
                 </div>
+<<<<<<< HEAD
                 <!-- {% if previous_url %}
         <p>You came from: <a href="{{ previous_url }}">{{ previous_url }}</a></p>
     {% endif %} -->
+=======
+>>>>>>> refs/remotes/origin/main
         </div>
         {% endfor %}
+
+        <!-- <div id="commentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeCommentModal()">&times;</span>
+                <h3>Add Your Comment</h3>
+                <form id="commentForm" action="/submit_comment" method="POST">
+                    <textarea id="commentText" name="comment" rows="4" style="width: 100%; padding: 10px;" placeholder="Type your comment here..."></textarea>
+                    <input type="number" id="email" name="id" value="{{request.id}}" style="visibility: hidden;">
+                    <button type="submit" style="margin-top: 10px;">Submit Comment</button>
+                </form>
+            </div>
+        </div> -->
 
         <div id="descriptionModal" class="modal">
             <div class="modal-content">
@@ -84,21 +123,6 @@
                 <p id="descriptionText"></p>
             </div>
         </div>
-<!-- 
-        <div class="request-card">
-            <h3>Request #001</h3>
-            <p>Category: Course Enrollment</p>
-            <p>Status: Pending</p>
-            <div class="decision-panel">
-                <button onclick="decision('approve', 'Request #001')">Approve</button>
-                <button onclick="decision('deny', 'Request #001')">Deny</button>
-                <button onclick="decision('request_more', 'Request #001')">Request More Info</button>
-            </div>
-            <div class="comments-section">
-                <textarea placeholder="Add comments or suggestions..."></textarea>
-                <button>Submit Comment</button>
-            </div>
-        </div> -->
 
         <div class="notification-system">
             <h3>Notifications</h3>
@@ -110,7 +134,7 @@
 
     <script>
         function redirectToCategory(event) {
-        event.preventDefault();  // Prevent form submission
+        event.preventDefault();
         const category = document.getElementById("type").value;
         if (category) {
             window.location.href = `/dashboard/faculty/0/${category}`;
@@ -120,7 +144,6 @@
     }
     </script>
     <script>
-        // JavaScript functions to handle modal display
         function showDescription(description) {
             document.getElementById('descriptionText').textContent = description;
             document.getElementById('descriptionModal').style.display = 'block';
@@ -139,7 +162,6 @@
         function decision(action, request) {
             const notifications = document.getElementById('notifications');
             let message = '';
-
             if (action === 'approve') {
                 message = `${request} has been approved.`;
             } else if (action === 'deny') {
@@ -147,11 +169,24 @@
             } else if (action === 'request_more') {
                 message = `More information requested for ${request}.`;
             }
-
             const notificationItem = document.createElement('li');
             notificationItem.textContent = message;
             notifications.appendChild(notificationItem);
         }
+    </script>
+    <script>
+        function showCommentModal() {
+            document.getElementById('commentModal').style.display = 'block';
+        }
+        function closeCommentModal() {
+            document.getElementById('commentModal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            const commentModal = document.getElementById('commentModal');
+            if (event.target === commentModal) {
+                closeCommentModal();
+            }
+        };
     </script>
 </body>
 </html>

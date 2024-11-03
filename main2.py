@@ -60,6 +60,21 @@ def auth(oper):
 def login():
     return render_template("tracking.html")
 
+@app.route('/submit_comment', methods=['POST'])
+def submit_comment():
+    comment = request.form.get('comment')
+    id = request.form.get('id')
+    file_path = f"req/{id}.txt"
+    line_number = 9
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    if (len(lines) < 10):
+        lines.append("\n"+str(comment)+"\n")
+    else:
+        lines[9] = (str(comment)+"\n")
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
+    return redirect(url_for('dashboard', oper='faculty', uname='0'))
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
